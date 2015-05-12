@@ -1,9 +1,10 @@
-Michi-c --- Michi (Minimalistic Go MCTS Engine) recoded in C
-============================================================
+Michi-c --- Michi recoded in C
+==============================
 
-This is a recoding in C (for speed) of the michi.py code by Petr Baudis avalaible at https://github.com/pasky/michi.
+This is a recoding in C (for speed) of the michi.py code by Petr Baudis avalaible at 
+https://github.com/pasky/michi.
 
-The objective of the Michi project are best explained by the Author: 
+Michi stands for "Minimalistic Pachi". This is a Minimalistic Go MCTS Engine. The aim of the project are best explained by the author: 
 
 > Michi aims to be a minimalistic but full-fledged Computer Go program based
 > on state-of-art methods (Monte Carlo Tree Search) and written in Python.
@@ -36,27 +37,27 @@ $ make test
 
 will perform a few (quick) regression tests. The result should be :
 
-tests/run
-10 passed
-20 passed
-30 passed
-110 passed
-210 passed
-220 passed
-230 passed
-240 passed
-250 passed
-260 passed
-The Go program terminated unexpectedly.
-10 passed
-20 passed
-30 passed
-40 passed
-50 passed
-60 passed
-70 passed
-The Go program terminated unexpectedly.
-make: *** [test] Error 2
+> tests/run
+> 10 passed
+> 20 passed
+> 30 passed
+> 110 passed
+> 210 passed
+> 220 passed
+> 230 passed
+> 240 passed
+> 250 passed
+> 260 passed
+> The Go program terminated unexpectedly.
+> 10 passed
+> 20 passed
+> 30 passed
+> 40 passed
+> 50 passed
+> 60 passed
+> 70 passed
+> The Go program terminated unexpectedly.
+> make: *** [test] Error 2
  
 Do not be bothered by the error message at the end of the 2 tests ... 
 If someone can explain and solve the problem, this will be very much welcome.
@@ -66,7 +67,7 @@ Usage
 
 $ ./michi gtp
 
-will allow to play a game using the gtp protocol. Best to use it through the gogui graphical interface.
+will allow to play a game using the gtp protocol. It's best to use it through the gogui graphical interface.
 
 $ ./michi mcbenchmark
 
@@ -101,47 +102,48 @@ The source is composed in 6 independent parts in michi.c
 - Monte Carlo Playout policy
 - Monte Carlo Tree search
 - User Interface (Utilities, Various main programs)
+
 and pattern code (3x3 and large patterns) which is found in patterns.c
 
-Go programs use lists or sets of (small) integers a lot. There are many possible implementations that differ by the performance of the various operations we need to perform on these data structures:
-- insert,
-- remove, 
-- enumerate elements, 
-- test "is in ?", 
+Go programs heavily use lists or sets of (small) integers. There are many possible implementations that differ by the performance of the various operations we need to perform on these data structures:
+- insert one element,
+- remove one element, 
+- enumerate all the elements, 
+- test "element belongs to ?", 
 - make the set empty ...
 
-The two simple implementations Slist and Mark of sets that we needed to make the michi-c program are found in michi.h (inlined for performance).
+The two simple implementations Slist and Mark of sets that I needed to make the michi-c program are found in michi.h (inlined for performance).
 
 Note: Some other concise (but hopefully useful) explanations are given as more detailed comments in the codes themselves.
 
 Short bibliography
 ------------------
 
-[1] Martin Mueller, Computer Go, Artificial Intelligence, Vol.134, No 1-2,
+1.  Martin Mueller, Computer Go, Artificial Intelligence, Vol.134, No 1-2,
     pp 145-179, 2002
-[2] Remi Coulom.  Efficient Selectivity and Backup Operators in Monte-Carlo Tree
+2.  Remi Coulom.  Efficient Selectivity and Backup Operators in Monte-Carlo Tree
     Search.  Paolo Ciancarini and H. Jaap van den Herik.  5th International 
     Conference on Computer and Games, May 2006, Turin, Italy.  2006. 
     <inria-00116992>
-[3] Sylvain Gelly, Yizao Wang, Remi Munos, Olivier Teytaud.  Modification of UCT
+3.  Sylvain Gelly, Yizao Wang, Remi Munos, Olivier Teytaud.  Modification of UCT
     with Patterns in Monte-Carlo Go. [Research Report] RR-6062, 2006.
     <inria-00117266v3>
-[4] David Stern, Ralf Herbrich, Thore Graepel, Bayesian Pattern Ranking for Move
+4.  David Stern, Ralf Herbrich, Thore Graepel, Bayesian Pattern Ranking for Move
     Prediction in the Game of Go, In Proceedings of the 23rd international 
     conference on Machine learning, pages 873–880, Pittsburgh, Pennsylvania, 
     USA, 2006
-[5] Rémi Coulom. Computing Elo Ratings of Move Patterns in the Game of Go. 
+5.  Rémi Coulom. Computing Elo Ratings of Move Patterns in the Game of Go. 
     In ICGA Journal (2007), pp 198-208.
-[6] Sylvain Gelly, David Silver. Achieving Master Level Play in 9×9 Computer Go.
+6.  Sylvain Gelly, David Silver. Achieving Master Level Play in 9×9 Computer Go.
     Proceedings of the Twenty-Third AAAI Conference on Artificial Intelligence 
     (2008)
-[7] Albert L Zobrist. A New Hashing Method with Application for Game Playing.
-[8] Petr Baudis. MCTS with Information Sharing, PhD Thesis, 2011
-[9] Robert Sedgewick, Algorithms in C, Addison-Wesley, 1990
+7.  Albert L Zobrist. A New Hashing Method with Application for Game Playing.
+8.  Petr Baudis. MCTS with Information Sharing, PhD Thesis, 2011
+9.  Robert Sedgewick, Algorithms in C, Addison-Wesley, 1990
 
-+ many other PhD thesis accessible on the WEB
+and many other PhD thesis accessible on the WEB
 
-Note: [1] can be consulted for the definition of Computer Go terms : 
+Note: [ref 1] can be consulted for the definition of Computer Go terms : 
       points, blocks, eyes, false eyes, liberties, etc.
       and historical bibliography
 
