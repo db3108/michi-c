@@ -37,27 +37,27 @@ $ make test
 
 will perform a few (quick) regression tests. The result should be :
 
-> tests/run
-> 10 passed
-> 20 passed
-> 30 passed
-> 110 passed
-> 210 passed
-> 220 passed
-> 230 passed
-> 240 passed
-> 250 passed
-> 260 passed
-> The Go program terminated unexpectedly.
-> 10 passed
-> 20 passed
-> 30 passed
-> 40 passed
-> 50 passed
-> 60 passed
-> 70 passed
-> The Go program terminated unexpectedly.
-> make: *** [test] Error 2
+ > tests/run
+ > 10 passed
+ > 20 passed
+ > 30 passed
+ > 110 passed
+ > 210 passed
+ > 220 passed
+ > 230 passed
+ > 240 passed
+ > 250 passed
+ > 260 passed
+ > The Go program terminated unexpectedly.
+ > 10 passed
+ > 20 passed
+ > 30 passed
+ > 40 passed
+ > 50 passed
+ > 60 passed
+ > 70 passed
+ > The Go program terminated unexpectedly.
+ > make: *** [test] Error 2
  
 Do not be bothered by the error message at the end of the 2 tests ... 
 If someone can explain and solve the problem, this will be very much welcome.
@@ -81,6 +81,16 @@ All the parameters are hard coded in the michi.h file, which must be modified if
 
 Understanding and Hacking
 -------------------------
+
+As stated in the introduction, the main goal of michi and michi-c is to provide a simple and clear code. Therefore, one objective is not to make it grow bigger.
+We would like to just correct bugs and/or modify the code to make it clerer or simpler.
+
+A companion project has been setup at 
+
+https://github.com/db3108/michi-c2
+
+in order to develop a program with better performances and more functionalities while relaxing the objective for brevity.
+
 
 The C code can be read in parallel with the python code. 
 I have been careful to keep the notations used by Petr (almost) everywhere.
