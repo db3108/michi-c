@@ -664,6 +664,11 @@ void init_large_patterns(void)
         load_spat_file(fspat);
         fclose(fspat);
     }
+    if (fprob == NULL || fspat == NULL) {
+        fprintf(stderr, "Warning: michi cannot load pattern files, "
+                "It will be much weaker. "
+                "Consider lowering EXPAND_VISITS %d->2\n", EXPAND_VISITS);
+    }
     log_fmt_s('I', "=========== Hashtable initialization synthesis ==========",
                                                                          NULL);
     // reset the statistics after logging them 
