@@ -4,7 +4,7 @@ Michi-c --- Michi recoded in C
 This is a recoding in C (for speed) of the michi.py code by Petr Baudis avalaible at 
 https://github.com/pasky/michi.
 
-Michi stands for "Minimalistic Pachi". This is a Minimalistic Go MCTS Engine. The aim of the project are best explained by the author: 
+Michi stands for "Minimalistic Pachi". This is a Minimalistic Go MCTS Engine. The aims of the project are best explained by the author: 
 
 > Michi aims to be a minimalistic but full-fledged Computer Go program based
 > on state-of-art methods (Monte Carlo Tree Search) and written in Python.
@@ -20,6 +20,16 @@ Michi stands for "Minimalistic Pachi". This is a Minimalistic Go MCTS Engine. Th
 > of exactly the same heuristics would be around 4k KGS or even better.
 
 Please go on his project page to read more about Michi and to find some information about theory or interesting projects to do.
+
+Michi-c is distributed under the MIT licence.  Now go forth, hack and peruse!
+However, as stated above, the main goal of michi and michi-c is to provide a simple and clear code. Therefore, one objective is not to make michi-c grow bigger.
+I would like to just correct bugs and/or modify the code to make it clearer or simpler.
+
+Therefore, a companion project has been setup at 
+
+https://github.com/db3108/michi-c2
+
+in order to develop a program with better performances and more functionalities while relaxing the objective for brevity.
 
 Installing
 ----------
@@ -81,16 +91,6 @@ All the parameters are hard coded in the michi.h file, which must be modified if
 
 Understanding and Hacking
 -------------------------
-
-As stated in the introduction, the main goal of michi and michi-c is to provide a simple and clear code. Therefore, one objective is not to make it grow bigger.
-We would like to just correct bugs and/or modify the code to make it clerer or simpler.
-
-A companion project has been setup at 
-
-https://github.com/db3108/michi-c2
-
-in order to develop a program with better performances and more functionalities while relaxing the objective for brevity.
-
 
 The C code can be read in parallel with the python code. 
 I have been careful to keep the notations used by Petr (almost) everywhere.

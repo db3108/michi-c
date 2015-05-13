@@ -3,7 +3,7 @@
 This is a recoding in C (for speed) of the michi.py code by Petr Baudis
 avalaible at https://github.com/pasky/michi .
 
-(c) 2015 Petr Baudis <pasky@ucw.cz> Denis Blumstein <denis.blumstein@free.fr>
+(c) 2015 Petr Baudis <pasky@ucw.cz> Denis Blumstein <db3108@free.fr>
 MIT licence (i.e. almost public domain)
 
 The following comments are taken almost verbatim from the michi.py code

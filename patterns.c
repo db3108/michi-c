@@ -1,6 +1,6 @@
 // patterns.c -- Routines for 3x3 patterns and large patterns for michi program
 //
-// (c) 2015 Denis Blumstein <denis.blumstein@free.fr> Petr Baudis <pasky@ucw.cz>
+// (c) 2015 Denis Blumstein <db3108@free.fr> Petr Baudis <pasky@ucw.cz>
 // MIT licence (i.e. almost public domain)
 #include "michi.h"
 
