@@ -113,6 +113,7 @@ void make_list_last_moves_neighbors(Position *pos, Slist points);
 double mcplayout(Position *pos, int amaf_map[], int owner_map[], int disp);
 Point parse_coord(char *s);
 char* play_move(Position *pos, Point pt);
+char* pass_move(Position *pos);
 void ppoint(Point pt);
 void print_pos(Position *pos, FILE *f, int *owner_map);
 void print_tree_summary(TreeNode *tree, int sims, FILE *f);
