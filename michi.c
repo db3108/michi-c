@@ -136,11 +136,10 @@ char* slist_str_as_point(Slist l) {
     return buf;
 }
 
-uint
-true_random_seed(void)
+unsigned int true_random_seed(void)
 // return a true random seed (which depends on the time)
 {
-    uint r1, r2, sec, usec ;
+    unsigned int r1, r2, sec, usec;
     struct timeval tp;
     gettimeofday(&tp, NULL);
     usec = tp.tv_usec;
