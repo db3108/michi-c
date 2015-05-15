@@ -1423,7 +1423,7 @@ finish_command:
     }
 }
 
-int main (int argc, char *argv[]) 
+int michi_console(int argc, char *argv[]) 
 {
     char *command;
     // Init global data
