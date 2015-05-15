@@ -155,7 +155,7 @@ char is_eyeish(Position *pos, Point pt)
 // test if pt is inside a single-color diamond and return the diamond color or 0
 // this could be an eye, but also a false one
 {
-    char eyecolor=0, othercolor;
+    char eyecolor=0, othercolor=0;
     int k;
     Point n;
     FORALL_NEIGHBORS(pos, pt, k, n) {
