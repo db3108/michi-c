@@ -136,11 +136,10 @@ char* slist_str_as_point(Slist l) {
     return buf;
 }
 
-uint
-true_random_seed(void)
+unsigned int true_random_seed(void)
 // return a true random seed (which depends on the time)
 {
-    uint r1, r2, sec, usec ;
+    unsigned int r1, r2, sec, usec;
     struct timeval tp;
     gettimeofday(&tp, NULL);
     usec = tp.tv_usec;
@@ -156,7 +155,7 @@ char is_eyeish(Position *pos, Point pt)
 // test if pt is inside a single-color diamond and return the diamond color or 0
 // this could be an eye, but also a false one
 {
-    char eyecolor=0, othercolor;
+    char eyecolor=0, othercolor=0;
     int k;
     Point n;
     FORALL_NEIGHBORS(pos, pt, k, n) {
@@ -1424,7 +1423,7 @@ finish_command:
     }
 }
 
-int main (int argc, char *argv[]) 
+int michi_console(int argc, char *argv[]) 
 {
     char *command;
     // Init global data

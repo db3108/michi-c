@@ -12,7 +12,7 @@ CFLAGS= -DNDEBUG -O3 -msse4.1 -fshort-enums -Wall -Wno-char-subscripts
 # Compilation options for profiling with gprof
 #CFLAGS=-pg -O3 -DNDEBUG -msse4.1 -fshort-enums -Wall -Wno-char-subscripts
 
-OBJS=patterns.o debug.o
+OBJS=patterns.o debug.o main.o
 BIN=michi
 
 all: $(BIN) 

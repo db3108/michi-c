@@ -146,8 +146,8 @@ double large_pattern_probability(Point pt);
 //------------ Useful utility functions (inlined for performance) -------------
 // Quick and Dirty random generator (32 bits Linear Congruential Generator)
 // Ref: Numerical Recipes in C (W.H. Press & al), 2nd Ed page 284
-__INLINE__ uint  qdrandom(void) {idum=(1664525*idum)+1013904223; return idum;}
-__INLINE__ uint random_int(int n) /* random int between 0 and n-1 */ \
+__INLINE__ unsigned int qdrandom(void) {idum=(1664525*idum)+1013904223; return idum;}
+__INLINE__ unsigned int random_int(int n) /* random int between 0 and n-1 */ \
            {unsigned long r=qdrandom(); return (r*n)>>32;}
 
 // Go programs manipulates lists or sets of (small) integers a lot. There are 

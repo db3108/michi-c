@@ -346,7 +346,7 @@ int primes[32]={5,      11,    37,   103,   293,   991, 2903,  9931,
                 1013, 1583,  2503,  3491,  4637,  5501, 6571,  7459,
                 8513, 9433, 10433, 11447, 11887, 12409, 2221,  4073};
 
-char     buf[512];
+static char buf[512];
 int      color[256];
 unsigned long zobrist_hashdata[141][4];
 LargePat *patterns;
@@ -411,7 +411,7 @@ LargePat build_pat(unsigned long key, int id, float prob)
 }
 
 // Code: ------------------- Zobrist signature computation --------------------
-void init_color(void)
+void init_stone_color(void)
 {
     memset(color,0,1024);
     color['.'] = 0;                      // 0: EMPTY
@@ -641,7 +641,7 @@ void init_large_patterns(void)
 
     // Initializations
     init_zobrist_hashdata();
-    init_color();
+    init_stone_color();
     init_gridcular(pat_gridcular_seq, pat_gridcular_seq1d);
     init_large_board();
 

@@ -1,3 +1,6 @@
 *.o
 twogtp/
 michi
+michi.log
+patterns.prob
+patterns.spat
