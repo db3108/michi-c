@@ -73,15 +73,31 @@ Usage
 
 $ ./michi gtp
 
-will allow to play a game using the gtp protocol. It's best to use it through the gogui graphical interface.
+will allow to play a game using the gtp protocol. Type help to get the list of
+available commands. 
+
+However it's easier to use michi through the gogui graphical interface.
+
+    http://gogui.sourceforge.net/
+
+With gogui, you can also let michi play GNUGo:
+
+    gogui/bin/gogui-twogtp -black './michi.py gtp' -white 'gnugo --mode=gtp --chinese-rules --capture-all-dead' -size 9 -komi 7.5 -verbose -auto
+
+It is *highly* recommended that you download Michi large-scale pattern files
+(patterns.prob, patterns.spat):
+
+    http://pachi.or.cz/michi-pat/
+
+You can also try
 
 $ ./michi mcbenchmark
 
-will run 2000 random playouts
+this will run 2000 random playouts
 
 $ ./michi tsdebug
 
-will run 1 MCTS tree search.
+this will run 1 MCTS tree search.
 
 All the parameters are hard coded in the michi.h file, which must be modified if you want to play with the code.
 
