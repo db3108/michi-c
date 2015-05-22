@@ -2,9 +2,9 @@
 #import "michi-ios.h"
 
 static TreeNode *tree;
-static Position *pos, pos2;
+static Position *pos = nil, pos2;
 static int *owner_map;
-static bool can_undo;
+static bool can_undo = false;
 
 char* empty_position(Position *pos);
 TreeNode* new_tree_node(Position *pos);
@@ -25,19 +25,16 @@ void undo_move(Position *pos);
     static Michi *sharedInstance;
     dispatch_once(&once, ^{
         sharedInstance = [[Michi alloc] init];
+
         flog = stdout;
         mark1 = calloc(1, sizeof(Mark));
         mark2 = calloc(1, sizeof(Mark));
         make_pat3set();
-        NSString *probPath = [[NSBundle mainBundle] pathForResource:@"patterns" ofType: @"prob"];
-        NSString *spatPath = [[NSBundle mainBundle] pathForResource:@"patterns" ofType: @"spat"];
-        init_large_patterns(probPath.UTF8String, spatPath.UTF8String);
         already_suggested = calloc(1, sizeof(Mark));
         pos = &pos2;
         empty_position(pos);
         tree = new_tree_node(pos);
         owner_map = calloc(BOARDSIZE, sizeof(int));
-        can_undo = false;
     });
     return sharedInstance;
 }
@@ -48,6 +45,12 @@ void undo_move(Position *pos);
         self.version = @"1.0";
     }
     return self;
+}
+
+- (void)setup {
+    NSString *probPath = [[NSBundle mainBundle] pathForResource:@"patterns" ofType: @"prob"];
+    NSString *spatPath = [[NSBundle mainBundle] pathForResource:@"patterns" ofType: @"spat"];
+    init_large_patterns(probPath.UTF8String, spatPath.UTF8String);
 }
 
 - (NSInteger)size {

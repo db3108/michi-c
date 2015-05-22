@@ -27,7 +27,7 @@ typedef struct GoPoint GoPoint;
 @property (strong, nonatomic) NSString *version;
 
 - (NSInteger)size;
-
+- (void)setup;
 - (void)reset;
 - (BOOL)playMove:(GoPoint)point;
 - (void)autoMove;
