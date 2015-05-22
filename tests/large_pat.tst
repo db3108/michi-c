@@ -4,7 +4,7 @@
 
 # size 5 center pattern
 # ---------------------
-debug setpos D6 E6 D5 E5 D4 E3 F6 A1 F5 A2 F4 A3
+debug setpos D6 E6 D5 E5 D4 E3 F6 pass F5 PASS F4 Pass
 10 debug match_pat E4
 #? [410926]
 

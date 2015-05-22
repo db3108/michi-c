@@ -1202,9 +1202,16 @@ void print_tree_summary(TreeNode *tree, int sims, FILE *f)
 
 Point parse_coord(char *s)
 {
-    char c;
+    char c, str[10];
     int  x,y;
-    if(strcasecmp(s,"pass") == 0) return PASS_MOVE;
+    for (int i=0 ; i<9 ; i++) {
+        if (s[i]==0) {
+            str[i]=0;
+            break;
+        }
+        str[i] = toupper(s[i]);
+    } 
+    if(strcmp(str, "PASS") == 0) return PASS_MOVE;
     sscanf(s, "%c%d", &c, &y);
     c = toupper(c);
     if (c<'J') x = c-'@';

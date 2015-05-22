@@ -128,7 +128,11 @@ void   copy_to_large_board(Position *pos);
 void   log_hashtable_synthesis();
 double large_pattern_probability(Point pt);
 //-------------------------- Definition of Useful Macros ----------------------
-#define __INLINE__ static inline
+#ifndef _MSC_VER
+    #define __INLINE__ static inline
+#else
+    #define __INLINE__ static __inline
+#endif
 #define FORALL_POINTS(pos,i) for(Point i=BOARD_IMIN ; i<BOARD_IMAX ; i++)
 #define FORALL_NEIGHBORS(pos, pt, k, n) \
     for(k=0,n=pt+delta[0] ; k<4 ; n=pt+delta[++k])
