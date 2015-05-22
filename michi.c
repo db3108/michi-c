@@ -84,11 +84,7 @@ Short bibliography
     points, blocks, eyes, false eyes, liberties, etc.
     and historical bibliography
 */
-
 #include <time.h>
-#include <sys/time.h>
-#include <sys/times.h>
-#include <unistd.h>
 #include "michi.h"
 
 void usage() {
@@ -139,14 +135,15 @@ char* slist_str_as_point(Slist l) {
 unsigned int true_random_seed(void)
 // return a true random seed (which depends on the time)
 {
-    unsigned int r1, r2, sec, usec;
-    struct timeval tp;
-    gettimeofday(&tp, NULL);
-    usec = tp.tv_usec;
-    sec  = tp.tv_sec;
+    unsigned int r1, r2, sec, day;
+    time_t tm=time(NULL);
+    struct tm *tcal=localtime(&tm);
+    sec  = tcal->tm_sec + 60*(tcal->tm_min + 60*tcal->tm_hour);
+    // day is a coarse (but sufficient for the current purpose) approximation 
+    day = tcal->tm_mday + 31*(tcal->tm_mon + 12*tcal->tm_year);
     // Park & Miller random generator (same as qdrandom())
     r1 =  (1664525*sec) + 1013904223;
-    r2 = (1664525*usec) + 1013904223;
+    r2 = (1664525*day) + 1013904223;
     return (r1^r2);
 }
 
@@ -1360,10 +1357,8 @@ void gtp_io(void)
             ret = str_coord(pt, buf);  
         }
         else if (strcmp(command, "cputime") == 0) {
-            struct tms t;
-            times(&t);
-            float clock_ticks = sysconf(_SC_CLK_TCK);
-            sprintf(buf, "%.3f", (t.tms_utime+t.tms_stime)/clock_ticks);
+            float time_sec = (float) clock() / (float) CLOCKS_PER_SEC;
+            sprintf(buf, "%.3f", time_sec);
             ret = buf;
         }
         else if (strcmp(command, "clear_board") == 0) {
