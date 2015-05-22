@@ -111,7 +111,7 @@ char* debug(Position *pos)
             Point pt = parse_coord(str);
             if (pos->color[pt] == '.')
                 ret = play_move(pos, pt);        // suppose alternate play
-            else if (strcmp(str,"pass")==0 || strcmp(str,"PASS")==0)
+            else if (pt == PASS_MOVE)
                 ret = pass_move(pos);
             else
                 ret ="Error Illegal move: point not EMPTY\n";
