@@ -89,6 +89,8 @@ It is *highly* recommended that you download Michi large-scale pattern files
 
     http://pachi.or.cz/michi-pat/
 
+Store and unpack them in the current directory for Michi to find.
+
 You can also try
 
 $ ./michi mcbenchmark
