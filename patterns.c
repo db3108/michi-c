@@ -634,7 +634,7 @@ void copy_to_large_board(Position *pos)
 }
 
 // Code: ------------------------- Public functions ---------------------------
-void init_large_patterns(void)
+void init_large_patterns(const char *prob, const char *spat)
 // Initialize all this stuff
 {
     FILE *fspat, *fprob;    // Files containing large patterns
@@ -649,17 +649,17 @@ void init_large_patterns(void)
     patterns = calloc(LENGTH, sizeof(LargePat));
     probs = calloc(1064481, sizeof(float));
     log_fmt_s('I', "Loading pattern probs ...", NULL);
-    fprob = fopen("patterns.prob", "r");
+    fprob = fopen(prob, "r");
     if (fprob == NULL)
-        log_fmt_s('w', "Cannot load pattern file:%s","patterns.prob");
+        log_fmt_s('w', "Cannot load pattern file:%s", prob);
     else {
         load_prob_file(fprob);
         fclose(fprob);
     }
     log_fmt_s('I', "Loading pattern spatial dictionary ...", NULL);
-    fspat = fopen("patterns.spat", "r");
+    fspat = fopen(spat, "r");
     if (fspat == NULL)
-        log_fmt_s('w', "Warning: Cannot load pattern file:%s","patterns.spat");
+        log_fmt_s('w', "Warning: Cannot load pattern file:%s", spat);
     else {
         load_spat_file(fspat);
         fclose(fspat);

@@ -123,7 +123,7 @@ char* str_coord(Point pt, char str[5]);
 void   make_pat3set(void);
 char*  make_list_pat3_matching(Position *pos, Point pt);
 char*  make_list_pat_matching(Point pt, int verbose);
-void   init_large_patterns(void);
+void   init_large_patterns(const char *prob, const char *spat);
 void   copy_to_large_board(Position *pos);
 void   log_hashtable_synthesis();
 double large_pattern_probability(Point pt);
