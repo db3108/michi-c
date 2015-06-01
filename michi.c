@@ -109,7 +109,6 @@ unsigned int idum=1;
 char         buf[BUFLEN];
 Point        allpoints[BOARDSIZE];
 int          PRIOR_CFG[] =     {24, 22, 8};
-Point        pos_capture;
 
 //================================== Code =====================================
 // Utilities
@@ -381,28 +380,11 @@ void remove_X_stone(Position *pos, Point pt)
     (pos->n)--;             // undo cheat
 }
 
-void undo_move(Position *pos)
-// WARNINGS: can only undo one move, can only undo capture of 1 stone
-// Enough to undo snap back
-{
-    remove_stone(pos, pos->last);
-    pos->last = pos->last2; pos->last2 = pos->last3;
-    pos->ko = pos->ko_old;
-    if (pos_capture) {
-        put_stone(pos, pos_capture);
-        pos->cap -=1;
-    }
-    (pos->n)--;
-    SWAP(char,pos->cap, pos->capX);
-    swap_color(pos);
-    assert(env4_OK(pos));
-}
-
 char* play_move(Position *pos, Point pt)
 // Play a move at point pt (color is imposed by alternate play)
 {
     int   captured=0, k;
-    Point libs[BOARDSIZE], n, stones[BOARDSIZE];
+    Point libs[BOARDSIZE], n, stones[BOARDSIZE], pos_capture;
 
     pos->ko_old = pos->ko;
     if (pt == pos->ko) return "Error Illegal move: retakes ko";
@@ -440,7 +422,6 @@ char* play_move(Position *pos, Point pt)
     swap_color(pos);
     (pos->n)++;
     assert(env4_OK(pos));
-    pos->last3 = pos->last2;
     pos->last2 = pos->last;
     pos->last  = pt;
     return "";          // Move OK
@@ -544,7 +525,7 @@ Point read_ladder_attack(Position *pos, Point pt, Slist libs)
 // Actually, this is a general 2-lib capture exhaustive solver.
 {
     Point moves[5], sizes[5];   // 4 points should be enough ...
-    Point move=0, pos_capture_old = pos_capture;
+    Point move=0;
     FORALL_IN_SLIST(libs, l) {
         Position pos_l = *pos;
         char *ret = play_move(&pos_l, l);
@@ -558,7 +539,6 @@ Point read_ladder_attack(Position *pos, Point pt, Slist libs)
         if (is_atari && slist_size(moves) == 0) 
             move = l; 
     }
-    pos_capture = pos_capture_old;
     return move;   // ladder attack not successful
 }
 
@@ -618,12 +598,10 @@ int fix_atari(Position *pos, Point pt, int singlept_ok
     l = libs[1];
     // We are escaping.  
     // Will playing our last liberty gain/ at least two liberties?
-    Point pos_capture_old = pos_capture;
     Position escpos = *pos;
     char *ret = play_move(&escpos, l);
     if (ret[0]!=0)
         return 1;     // oops, suicidal move
-    pos_capture = pos_capture_old;
     compute_block(&escpos, l, stones, libs, maxlibs);  
     if (slist_size(libs) >= 2) {
         // Good, there is still some liberty remaining - but if it's just the 
@@ -760,6 +738,7 @@ Point choose_from(Position *pos, Slist moves, char *kind, int disp)
     char   *ret;
     Info   sizes[20];
     Point  move = PASS_MOVE, ds[20];
+    Position saved_pos = *pos;
 
     FORALL_IN_SLIST(moves, pt) {
         if (disp && strcmp(kind, "random")!=0)
@@ -777,7 +756,7 @@ Point choose_from(Position *pos, Slist moves, char *kind, int disp)
                 if (slist_size(ds) > 0) {
                     if(disp) fprintf(stderr, "rejecting self-atari move %s\n",
                                                            str_coord(pt, buf));
-                    undo_move(pos);
+                    *pos = saved_pos; // undo move;
                     move = PASS_MOVE;
                     continue;
                 }
@@ -851,7 +830,7 @@ void expand(TreeNode *tree)
     char     cfg_map[BOARDSIZE];
     int      nchildren = 0;
     Info     sizes[BOARDSIZE];
-    Point    moves[BOARDSIZE], pos_capture_old=pos_capture;
+    Point    moves[BOARDSIZE];
     Position pos2;
     TreeNode *childset[BOARDSIZE], *node;
     if (tree->pos.last!=PASS_MOVE)
@@ -866,7 +845,6 @@ void expand(TreeNode *tree)
         assert(tree->pos.color[pt] == '.');
         char* ret = play_move(&pos2, pt);
         if (ret[0] != 0) continue;
-        pos_capture = pos_capture_old;
         // pt is a legal move : we build a new node for it
         childset[pt]= tree->children[nchildren++] = new_tree_node(&pos2);
     }
@@ -879,7 +857,6 @@ void expand(TreeNode *tree)
         pos2 = tree->pos;
         char* ret = play_move(&pos2, pt);
         if (ret[0] != 0) continue;
-        pos_capture = pos_capture_old;
         node = childset[pt];
         if (sizes[k] == 1) {
             node->pv += PRIOR_CAPTURE_ONE;
@@ -896,7 +873,6 @@ void expand(TreeNode *tree)
         pos2 = tree->pos;
         char* ret = play_move(&pos2, pt);
         if (ret[0] != 0) continue;
-        pos_capture = pos_capture_old;
         node = childset[pt];
         node->pv += PRIOR_PAT3;
         node->pw += PRIOR_PAT3;
