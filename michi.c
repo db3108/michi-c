@@ -685,15 +685,16 @@ int gen_playout_moves_capture(Position *pos, Slist heuristic_set, float prob,
     Point move2[20], size2[20];
 
     slist_clear(moves); slist_clear(sizes);
-    FORALL_IN_SLIST(heuristic_set, pt)
-        if (pos->color[pt]=='x' || pos->color[pt]=='X') {
-            fix_atari(pos, pt, SINGLEPT_NOK, TWOLIBS_TEST,
-                                            twolib_edgeonly, move2, size2);
-            k=1;
-            FORALL_IN_SLIST(move2, move)
-                if (slist_insert(moves, move))
-                    slist_push(sizes, size2[k++]);
-        }
+    if (random_int(10000) <= prob*10000.0)
+        FORALL_IN_SLIST(heuristic_set, pt)
+            if (pos->color[pt]=='x' || pos->color[pt]=='X') {
+                fix_atari(pos, pt, SINGLEPT_NOK, TWOLIBS_TEST,
+                                                twolib_edgeonly, move2, size2);
+                k=1;
+                FORALL_IN_SLIST(move2, move)
+                    if (slist_insert(moves, move))
+                        slist_push(sizes, size2[k++]);
+            }
     return slist_size(moves);
 }
 
