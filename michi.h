@@ -48,6 +48,7 @@ extern  int PRIOR_CFG[];   // priors for moves in cfg dist. 1, 2, 3
 typedef unsigned char Byte;
 typedef unsigned int  Info;
 typedef unsigned int  Point;
+typedef unsigned long long ZobristHash;
 typedef Info* Slist;
 typedef enum {PASS_MOVE, RESIGN_MOVE, COMPUTER_BLACK, COMPUTER_WHITE} Code;
 
@@ -152,7 +153,7 @@ double large_pattern_probability(Point pt);
 // Ref: Numerical Recipes in C (W.H. Press & al), 2nd Ed page 284
 __INLINE__ unsigned int qdrandom(void) {idum=(1664525*idum)+1013904223; return idum;}
 __INLINE__ unsigned int random_int(int n) /* random int between 0 and n-1 */ \
-           {unsigned long r=qdrandom(); return (r*n)>>32;}
+           {unsigned long long r=qdrandom(); return (r*n)>>32;}
 
 // Go programs manipulates lists or sets of (small) integers a lot. There are 
 // many possible implementations that differ by the performance of the various

@@ -301,7 +301,7 @@ void make_pat3set(void)
 // ------------------------ Data Structures -----------------------------------
 // Large pattern entry in the hash table
 typedef struct hash_t {
-    unsigned long key;      // 64 bits Zobrist hash
+    ZobristHash   key;      // 64 bits Zobrist hash
     int           id;       // id of the pattern
     float         prob;     // probability of move triggered by the pattern
 } LargePat;
@@ -347,14 +347,14 @@ int primes[32]={5,      11,    37,   103,   293,   991, 2903,  9931,
                 8513, 9433, 10433, 11447, 11887, 12409, 2221,  4073};
 
 static char buf[512];
-int      color[256];
-unsigned long zobrist_hashdata[141][4];
-LargePat *patterns;
-float    *probs;
-long     nsearchs=0;
-long     nsuccess=0;
-double   sum_len_success=0;
-double   sum_len_failure=0;
+int         color[256];
+ZobristHash zobrist_hashdata[141][4];
+LargePat*   patterns;
+float*      probs;
+long long   nsearchs=0;
+long long   nsuccess=0;
+double      sum_len_success=0;
+double      sum_len_failure=0;
 
 char large_board[LARGE_BOARDSIZE];
 int  large_coord[BOARDSIZE]; // coord in the large board of any points of board
@@ -362,7 +362,7 @@ int  large_coord[BOARDSIZE]; // coord in the large board of any points of board
 // Code: ------ Dictionnary of patterns (hastable with internal chaining) -----
 void print_pattern(const char *msg, int i, LargePat p)
 {
-    sprintf(buf,"%s%-6d %16.16lx %6d %f", msg, i, p.key, p.id, p.prob);
+    sprintf(buf,"%s%-6d %16.16llx %6d %f", msg, i, p.key, p.id, p.prob);
 }
 
 void dump_patterns()
@@ -374,11 +374,11 @@ void dump_patterns()
     }
 }
 
-int find_pat(unsigned long key)
+int find_pat(ZobristHash key)
 {
     assert(key!=0);
 
-    int h = (key>>20) & KMASK, h2=primes[(key>>(20+KSIZE)) & 15], len=0;
+    int h = (key>>20) & KMASK, h2=primes[(key>>(20+KSIZE)) & 15], len=1;
     nsearchs++;
     while (patterns[h].key != key) {
         len++;
@@ -404,7 +404,7 @@ int insert_pat(LargePat p)
         return FOUND;
 }
 
-LargePat build_pat(unsigned long key, int id, float prob)
+LargePat build_pat(ZobristHash key, int id, float prob)
 {    
     LargePat pat = {key, id, prob};
     return pat;
@@ -425,23 +425,23 @@ void init_zobrist_hashdata(void)
     for (int d=0 ; d<141 ; d++)  {//d = displacement ...
         for (int c=0 ; c<4 ; c++) {
             unsigned int d1 = qdrandom(), d2=qdrandom();
-            unsigned long ld1 = d1, ld2=d2;
+            ZobristHash ld1 = d1, ld2=d2;
             zobrist_hashdata[d][c] = (ld1<<32) + ld2;
         }
     }
 }
   
-unsigned long zobrist_hash(char *pat) {
+ZobristHash zobrist_hash(char *pat) {
     int l = strlen(pat);
-    unsigned long k=0;
+    ZobristHash k=0;
     for (int i=0 ; i<l ; i++) {
         k ^= zobrist_hashdata[i][color[pat[i]]];
     }
     return k;
 }
 
-unsigned long 
-update_zobrist_hash_at_point(Point pt, int size, unsigned long k)
+ZobristHash 
+update_zobrist_hash_at_point(Point pt, int size, ZobristHash k)
 // Update the Zobrist signature for the points of pattern of size 'size' 
 {
     int imin=pat_gridcular_size[size-1], imax=pat_gridcular_size[size];
@@ -546,7 +546,7 @@ int load_spat_file(FILE *f)
 {
     int  d, id, idmax=-1, len, lenmax=0, npats=0;
     char strpat[256], strperm[256];
-    unsigned long k;
+    ZobristHash k;
     int permutation[8][141];
 
     // compute the 8 permutations of the gridcular positions corresponding
@@ -684,7 +684,7 @@ double large_pattern_probability(Point pt)
 {
     double prob=-1.0;
     int matched_len=0, non_matched_len=0;
-    unsigned long k=0;
+    ZobristHash k=0;
 
     if (large_patterns_loaded)
         for (int s=1 ; s<13 ; s++) {
@@ -706,7 +706,7 @@ double large_pattern_probability(Point pt)
 char* make_list_pat_matching(Point pt, int verbose)
 // Build the list of patterns that match at the point pt
 {
-    unsigned long k=0;
+    ZobristHash k=0;
     int i;
     char id[16];
 
@@ -735,7 +735,7 @@ void log_hashtable_synthesis()
     sprintf(buf,"hashtable entries: %.0lf (fill ratio: %.1lf %%)", nkeys,
                                              100.0 * nkeys / LENGTH);
     log_fmt_s('I', buf, NULL);
-    sprintf(buf,"%ld searches, %ld success (%.1lf %%)", nsearchs, nsuccess,
+    sprintf(buf,"%lld searches, %lld success (%.1lf %%)", nsearchs, nsuccess,
                                         100.0 * (double) nsuccess / nsearchs);
     log_fmt_s('I', buf, NULL);
     sprintf(buf,"average length of searchs -- success: %.1lf, failure: %.1lf",
