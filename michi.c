@@ -1370,7 +1370,7 @@ void gtp_io(void)
             if(str == NULL) goto finish_command;
             float komi = (float) atof(str);
             if (komi != 7.5) {
-                sprintf(buf, "Error: Trying to set incompatible boardsize %s"
+                sprintf(buf, "Error: Trying to set incompatible komi %s"
                              " (!= 7.5)", str);
                 log_fmt_s('E', buf, NULL);
                 ret = buf;
