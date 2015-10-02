@@ -1283,8 +1283,8 @@ void begin_game(void) {
 void gtp_io(void)
 {
     char line[BUFLEN], *cmdid, *command, msg[BUFLEN], *ret;
-    char *known_commands="\ncputime\ndebug subcmd\ngenmove\nhelp\nknown_command"
-    "\nlist_commands\nname\nplay\nprotocol_version\nquit\nversion\n";
+    char *known_commands="\nboardsize\ncputime\ndebug subcmd\ngenmove\nhelp\nknown_command"
+    "\nkomi\nlist_commands\nname\nplay\nprotocol_version\nquit\nversion\n";
     int      game_ongoing=1, i;
     int      *owner_map=calloc(BOARDSIZE, sizeof(int));
     TreeNode *tree;
@@ -1359,6 +1359,19 @@ void gtp_io(void)
             if (size != N) {
                 sprintf(buf, "Error: Trying to set incompatible boardsize %s"
                              " (!= %d)", str, N);
+                log_fmt_s('E', buf, NULL);
+                ret = buf;
+            }
+            else
+                ret = "";
+        }
+        else if (strcmp(command, "komi") == 0) {
+            char *str = strtok(NULL, " \t\n");
+            if(str == NULL) goto finish_command;
+            float komi = (float) atof(str);
+            if (komi != 7.5) {
+                sprintf(buf, "Error: Trying to set incompatible boardsize %s"
+                             " (!= 7.5)", str);
                 log_fmt_s('E', buf, NULL);
                 ret = buf;
             }
