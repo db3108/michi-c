@@ -69,7 +69,7 @@ will perform a few (quick) regression tests. The result should be :
     Summary: 7/7 passes. 0 unexpected passes, 0 unexpected failures
 
 If the test is not successful you can take a look at the INSTALL file in the
-michi-c2 projet. There are some advices in case of troubleshooting.
+michi-c2 project. There are some advices in case of troubleshooting.
  
 Usage
 -----
