@@ -530,6 +530,22 @@ void permute(int permutation[8][141],int i,char strpat[256],char strperm[256])
 }
 
 // Code: -------------------- load pattern definitions ------------------------
+int max_pattern_id(FILE *f)
+// Determine the size of the large pattern database (max of id)
+{
+    float prob;
+    int   id, id_max=0,t1,t2;
+
+    while (fgets(buf, 255, f) != NULL) {
+        if (buf[0] == '#') continue;
+        sscanf(buf,"%f %d %d (s:%d)", &prob, &t1, &t2, &id);
+        if (id>id_max)
+            id_max = id;
+    }
+    return id_max;
+    rewind(f);
+}
+
 void load_prob_file(FILE *f)
 {
     float prob;
@@ -647,22 +663,26 @@ void init_large_patterns(void)
 
     // Load patterns data from files
     patterns = calloc(LENGTH, sizeof(LargePat));
-    probs = calloc(1064481, sizeof(float));
     log_fmt_s('I', "Loading pattern probs ...", NULL);
     fprob = fopen("patterns.prob", "r");
     if (fprob == NULL)
         log_fmt_s('w', "Cannot load pattern file:%s","patterns.prob");
     else {
+        int id_max = max_pattern_id(fprob);
+        log_fmt_i('I', "Reading patterns (id_max = %d)", id_max);
+        probs = calloc(id_max+1, sizeof(float));
         load_prob_file(fprob);
         fclose(fprob);
-    }
-    log_fmt_s('I', "Loading pattern spatial dictionary ...", NULL);
-    fspat = fopen("patterns.spat", "r");
-    if (fspat == NULL)
-        log_fmt_s('w', "Warning: Cannot load pattern file:%s","patterns.spat");
-    else {
-        load_spat_file(fspat);
-        fclose(fspat);
+
+        log_fmt_s('I', "Loading pattern spatial dictionary ...", NULL);
+        fspat = fopen("patterns.spat", "r");
+        if (fspat == NULL)
+            log_fmt_s('w', "Warning: Cannot load pattern file:%s",
+                                                             "patterns.spat");
+        else {
+            load_spat_file(fspat);
+            fclose(fspat);
+        }
     }
     if (fprob == NULL || fspat == NULL) {
         fprintf(stderr, "Warning: michi cannot load pattern files, "
