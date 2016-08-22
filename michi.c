@@ -102,7 +102,7 @@ void usage() {
 //
 // -------------------------------- Global Data -------------------------------
 //                      North East South  West  NE  SE  SW  NW
-static int   delta[] = { -N-1,   1,  N+1,   -1, -N,  W,  N, -W};
+static int   delta[] = { -N-1,   1,  N+1,   -1, -N,  W,  N, -W, 0};
 static char* colstr  = "@ABCDEFGHJKLMNOPQRST";
 Mark         *mark1, *mark2, *already_suggested;
 unsigned int idum=1;
