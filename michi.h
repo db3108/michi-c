@@ -25,7 +25,7 @@
 #define N_SIMS     1400
 #define RAVE_EQUIV 3500
 #define EXPAND_VISITS 8
-#define PRIOR_EVEN         10   // should be even number; 0.5 prior 
+#define PRIOR_EVEN         10   // should be even number; 0.5 prior
 #define PRIOR_SELFATARI    10   // negative prior
 #define PRIOR_CAPTURE_ONE  15
 #define PRIOR_CAPTURE_MANY 30
@@ -62,7 +62,7 @@ typedef struct { // ---------------------- Go Position ------------------------
     Byte  env4d[BOARDSIZE];   // color encoding for the 4 diagonal neighbors
     int   n;                  // move number
     Point ko, ko_old;         // position of the ko (0 if no ko)
-    Point last, last2, last3; // position of the last move and the move before 
+    Point last, last2, last3; // position of the last move and the move before
     float komi;               // komi for the game
     char  cap;                // number of stones captured by the 'x' player
     char  capX;               // number of stones captured by the 'X' player
@@ -71,7 +71,7 @@ typedef struct { // ---------------------- Go Position ------------------------
 typedef struct tree_node { // ------------ Monte-Carlo tree node --------------
     int v;          // number of visits
     int w;          // number of wins(expected reward is w/v)
-    int pv;         // pv, pw are prior values 
+    int pv;         // pv, pw are prior values
     int pw;         // (node value = w/v + pw/pv)
     int av;         // av, aw are amaf values ("all moves as first"),
     int aw;         // used for the RAVE tree policy)
@@ -155,7 +155,7 @@ __INLINE__ unsigned int qdrandom(void) {idum=(1664525*idum)+1013904223; return i
 __INLINE__ unsigned int random_int(int n) /* random int between 0 and n-1 */ \
            {unsigned long long r=qdrandom(); return (r*n)>>32;}
 
-// Go programs manipulates lists or sets of (small) integers a lot. There are 
+// Go programs manipulates lists or sets of (small) integers a lot. There are
 // many possible implementations that differ by the performance of the various
 // operations we need to perform on these data structures.
 // insert, remove, enumerate elements, test "is in ?", make the set empty ...
@@ -186,7 +186,7 @@ __INLINE__ int  slist_insert(Slist l, Info item)
 {
     int k, n=l[0] + 1;
     l[n] = item;
-    for (k=1 ; k<=n ; k++) 
+    for (k=1 ; k<=n ; k++)
         if(l[k] == item) break;
     if(k == n) {
         l[0] = n; return 1;   // return 1 if the item has been inserted

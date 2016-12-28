@@ -7,7 +7,7 @@ int     c1,c2;             // counters for warning messages
 int     nmsg;              // number of written log entries
 
 void too_many_msg(void)
-// if too many messages have been logged, print a last error and exit 
+// if too many messages have been logged, print a last error and exit
 {
     fprintf(stderr,"Too many messages have been written in log file "
                        " (maximum 100000)\n");
@@ -75,11 +75,11 @@ void print_env8(int env8)
     src[0] = decode_env8(env8, 7); // NW           3 4 5   bit 0=LSB     3 . 1
     src[1] = decode_env8(env8, 0); // N            6 7 8                 6 2 5
     src[2] = decode_env8(env8, 4); // NE
-    src[3] = decode_env8(env8, 3); // W 
+    src[3] = decode_env8(env8, 3); // W
     src[4] = '.';                  // Center
-    src[5] = decode_env8(env8, 1); // E     
+    src[5] = decode_env8(env8, 1); // E
     src[6] = decode_env8(env8, 6); // SW
-    src[7] = decode_env8(env8, 2); // S 
+    src[7] = decode_env8(env8, 2); // S
     src[8] = decode_env8(env8, 5); // SE
 
     printf("env8 = %d\n", env8);
@@ -96,7 +96,7 @@ void print_marker(Position *pos, Mark *marker)
     print_pos(&pos2, stdout, 0);
 }
 
-char* debug(Position *pos) 
+char* debug(Position *pos)
 {
     char *command = strtok(NULL," \t\n"), *ret="";
     char *known_commands = "\nenv8\nfix_atari\ngen_playout\nmatch_pat3\n"
@@ -138,7 +138,7 @@ char* debug(Position *pos)
             else if (strcmp(suggestion, "pat3") == 0)
                 gen_playout_moves_pat3(pos, last_moves_neighbors,
                                             1.0, moves);
-            ret = slist_str_as_point(moves); 
+            ret = slist_str_as_point(moves);
         }
         else
             ret = "Error - missing [capture|pat3]";
