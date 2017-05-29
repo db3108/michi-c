@@ -24,15 +24,15 @@ To start reading the code, begin either:
 It may be better to jump around a bit instead of just reading straight
 from start to end.
 
-The C code can be read in parallel with the python code. 
+The C code can be read in parallel with the python code.
 I have been careful to keep the notations used by Petr (almost) everywhere.
 Of course the algorithms are the same (at least functionally) as well as the
-parameters. 
+parameters.
 
 Examples where the python and the C codes are different are:
-- in the functions gen_playout_moves_xxx(). I have not been able to emulate in 
+- in the functions gen_playout_moves_xxx(). I have not been able to emulate in
   C the generators that are available in python (yield instruction). So these
-  functions in the C code must compute the whole list of suggestions before 
+  functions in the C code must compute the whole list of suggestions before
   returning.
 - computation of blocks does not use regexp as the direct coding is simple.
 - need to recode a functionality equivalent to python dictionary (in patterns.c)
@@ -46,8 +46,8 @@ The source is composed in 7 independent parts
 - User Interface (Utilities, Various main programs)
 - Pattern code (3x3 and large patterns) which is found in patterns.c
 
-In C, functions prototypes must be declared before use. 
-In order to avoid these declarations, functions are defined before they are 
+In C, functions prototypes must be declared before use.
+In order to avoid these declarations, functions are defined before they are
 used, which has the same effect.
 This means that the higher level functions are found towards the bottom of
 this file. This may not be a good idea in terms of readibility but at least
@@ -58,20 +58,20 @@ Short bibliography
 [1] Martin Mueller, Computer Go, Artificial Intelligence, Vol.134, No 1-2,
     pp 145-179, 2002
 [2] Remi Coulom.  Efficient Selectivity and Backup Operators in Monte-Carlo Tree
-    Search.  Paolo Ciancarini and H. Jaap van den Herik.  5th International 
-    Conference on Computer and Games, May 2006, Turin, Italy.  2006. 
+    Search.  Paolo Ciancarini and H. Jaap van den Herik.  5th International
+    Conference on Computer and Games, May 2006, Turin, Italy.  2006.
     <inria-00116992>
 [3] Sylvain Gelly, Yizao Wang, Remi Munos, Olivier Teytaud.  Modification of UCT
     with Patterns in Monte-Carlo Go. [Research Report] RR-6062, 2006.
     <inria-00117266v3>
 [4] David Stern, Ralf Herbrich, Thore Graepel, Bayesian Pattern Ranking for Move
-    Prediction in the Game of Go, In Proceedings of the 23rd international 
-    conference on Machine learning, pages 873–880, Pittsburgh, Pennsylvania, 
+    Prediction in the Game of Go, In Proceedings of the 23rd international
+    conference on Machine learning, pages 873–880, Pittsburgh, Pennsylvania,
     USA, 2006
-[5] Rémi Coulom. Computing Elo Ratings of Move Patterns in the Game of Go. 
+[5] Rémi Coulom. Computing Elo Ratings of Move Patterns in the Game of Go.
     In ICGA Journal (2007), pp 198-208.
 [6] Sylvain Gelly, David Silver. Achieving Master Level Play in 9×9 Computer Go.
-    Proceedings of the Twenty-Third AAAI Conference on Artificial Intelligence 
+    Proceedings of the Twenty-Third AAAI Conference on Artificial Intelligence
     (2008)
 [7] Albert L Zobrist. A New Hashing Method with Application for Game Playing.
     Technical Report #88. April 1970
@@ -80,7 +80,7 @@ Short bibliography
 
 + many other PhD thesis accessible on the WEB
 
-[1] can be consulted for the definition of Computer Go terms : 
+[1] can be consulted for the definition of Computer Go terms :
     points, blocks, eyes, false eyes, liberties, etc.
     and historical bibliography
 */
@@ -102,7 +102,7 @@ void usage() {
 //
 // -------------------------------- Global Data -------------------------------
 //                      North East South  West  NE  SE  SW  NW
-static int   delta[] = { -N-1,   1,  N+1,   -1, -N,  W,  N, -W};
+static int   delta[] = { -N-1,   1,  N+1,   -1, -N,  W,  N, -W, 0};
 static char* colstr  = "@ABCDEFGHJKLMNOPQRST";
 Mark         *mark1, *mark2, *already_suggested;
 unsigned int idum=1;
@@ -138,7 +138,7 @@ unsigned int true_random_seed(void)
     time_t tm=time(NULL);
     struct tm *tcal=localtime(&tm);
     sec  = tcal->tm_sec + 60*(tcal->tm_min + 60*tcal->tm_hour);
-    // day is a coarse (but sufficient for the current purpose) approximation 
+    // day is a coarse (but sufficient for the current purpose) approximation
     day = tcal->tm_mday + 31*(tcal->tm_mon + 12*tcal->tm_year);
     // Park & Miller random generator (same as qdrandom())
     r1 =  (1664525*sec) + 1013904223;
@@ -169,7 +169,7 @@ char is_eyeish(Position *pos, Point pt)
 
 char is_eye(Position *pos, Point pt)
 // test if pt is an eye and return its color or 0.
-//                                                  #########   
+//                                                  #########
 // Note: this test cannot detect true eyes like     . . X . #   or    X X X
 //                                                    X . X #         X   X
 //                                                    X X . #           X   X
@@ -179,7 +179,7 @@ char is_eye(Position *pos, Point pt)
     int at_edge=0, false_count=0, k;
     Point d;
     if (eyecolor == 0) return 0;
-    
+
     // Eye-like shape, but it could be a falsified eye
     SWAP_CASE(falsecolor);
     FORALL_DIAGONAL_NEIGHBORS(pos, pt, k, d) {
@@ -198,7 +198,7 @@ Byte compute_env4(Position *pos, Point pt, int offset)
     Byte env4=0, hi, lo, c;
     for (int k=offset ; k<offset+4 ; k++) {
         Point n = pt + delta[k];
-        // color coding c -> 0:WHITE, 1:BLACK, 2:EMPTY, 3:OUT 
+        // color coding c -> 0:WHITE, 1:BLACK, 2:EMPTY, 3:OUT
         if (pos->color[n] == '.')         c = 2;
         else if(pos->color[n] == ' ')     c = 3;
         else {
@@ -367,7 +367,7 @@ int capture_block(Position *pos, Slist stones)
     return slist_size(stones);
 }
 
-void swap_color(Position *pos) 
+void swap_color(Position *pos)
 {
     FORALL_POINTS(pos, pt)
         SWAP_CASE(pos->color[pt]);
@@ -449,7 +449,7 @@ void make_list_neighbors(Position *pos, Point pt, Slist points)
 }
 
 void make_list_last_moves_neighbors(Position *pos, Slist points)
-// generate a randomly shuffled list of points including and surrounding 
+// generate a randomly shuffled list of points including and surrounding
 // the last two moves (but with the last move having priority)
 {
     Point last2_neighbors[12];
@@ -459,7 +459,7 @@ void make_list_last_moves_neighbors(Position *pos, Slist points)
         slist_insert(points, n);     // insert n if it is not already in points
 }
 
-void make_list_neighbor_blocks_in_atari(Position *pos, Slist stones, 
+void make_list_neighbor_blocks_in_atari(Position *pos, Slist stones,
         Slist breps, Slist libs)
 // Return a list of (opponent) blocks in contact with point in stones
 // Each block in the list is represented by one of its points brep
@@ -489,7 +489,7 @@ void make_list_neighbor_blocks_in_atari(Position *pos, Slist stones,
 }
 
 double score(Position *pos, int owner_map[])
-// compute score for to-play player; this assumes a final position with all 
+// compute score for to-play player; this assumes a final position with all
 // dead stones captured and only single point eyes on the board ...
 {
     double s=pos->komi;
@@ -515,8 +515,8 @@ double score(Position *pos, int owner_map[])
 }
 
 //================================ Go heuristics ==============================
-// The couple of functions read_ladder_attack / fix_atari is maybe the most 
-// complicated part of the whole program (sadly). 
+// The couple of functions read_ladder_attack / fix_atari is maybe the most
+// complicated part of the whole program (sadly).
 // Feel free to just TREAT IT AS A BLACK-BOX, it's not really that interesting!
 
 Point read_ladder_attack(Position *pos, Point pt, Slist libs)
@@ -536,8 +536,8 @@ Point read_ladder_attack(Position *pos, Point pt, Slist libs)
         int is_atari = fix_atari(&pos_l, pt, SINGLEPT_NOK, TWOLIBS_TEST_NO
                                                            , 0, moves, sizes);
         // if block is in atari and cannot escape, it is caugth in a ladder
-        if (is_atari && slist_size(moves) == 0) 
-            move = l; 
+        if (is_atari && slist_size(moves) == 0)
+            move = l;
     }
     return move;   // ladder attack not successful
 }
@@ -560,7 +560,7 @@ int fix_atari(Position *pos, Point pt, int singlept_ok
     slist_clear(moves); slist_clear(sizes);
     compute_block(pos, pt, stones, libs, maxlibs);
     if (singlept_ok && slist_size(stones) == 1) return 0;
-    if (slist_size(libs) >= 2) { 
+    if (slist_size(libs) >= 2) {
         if (twolib_test && slist_size(libs) == 2 && slist_size(stones) > 1) {
             if (twolib_edgeonly
                    && ((line_height(libs[1]))>0 || (line_height(libs[2]))>0)) {
@@ -577,13 +577,13 @@ int fix_atari(Position *pos, Point pt, int singlept_ok
                         slist_push(sizes, slist_size(stones));
                 }
             }
-        } 
-        return 0;  
+        }
+        return 0;
     }
 
-    if (pos->color[pt] == 'x') { 
+    if (pos->color[pt] == 'x') {
         // - this is opponent's group, that's enough to capture it
-        if (slist_insert(moves, libs[1])) 
+        if (slist_insert(moves, libs[1]))
             slist_push(sizes, slist_size(stones));
         return in_atari;
     }
@@ -596,18 +596,18 @@ int fix_atari(Position *pos, Point pt, int singlept_ok
             slist_push(sizes, slist_size(stones));
 
     l = libs[1];
-    // We are escaping.  
+    // We are escaping.
     // Will playing our last liberty gain/ at least two liberties?
     Position escpos = *pos;
     char *ret = play_move(&escpos, l);
     if (ret[0]!=0)
         return 1;     // oops, suicidal move
-    compute_block(&escpos, l, stones, libs, maxlibs);  
+    compute_block(&escpos, l, stones, libs, maxlibs);
     if (slist_size(libs) >= 2) {
-        // Good, there is still some liberty remaining - but if it's just the 
-        // two, check that we are not caught in a ladder... (Except that we 
+        // Good, there is still some liberty remaining - but if it's just the
+        // two, check that we are not caught in a ladder... (Except that we
         // don't care if we already have some alternative escape routes!)
-        if (slist_size(moves)>1 
+        if (slist_size(moves)>1
         || (slist_size(libs)==2 && read_ladder_attack(&escpos,l,libs) == 0)
         || (slist_size(libs)>=3))
             if (slist_insert(moves, l))
@@ -618,7 +618,7 @@ int fix_atari(Position *pos, Point pt, int singlept_ok
 
 void compute_cfg_distances(Position *pos, Point pt, char cfg_map[BOARDSIZE])
 // Return a board map listing common fate graph distances from a given point.
-// This corresponds to the concept of locality while contracting groups to 
+// This corresponds to the concept of locality while contracting groups to
 // single points.
 {
     int   head=1, k, tail=0;
@@ -636,7 +636,7 @@ void compute_cfg_distances(Position *pos, Point pt, char cfg_map[BOARDSIZE])
             if (c==' ') continue;
             if (0 <= cfg_map[n] && cfg_map[n] <= cfg_map[pt]) continue;
             int cfg_before = cfg_map[n];
-            if (c != '.' && c==pos->color[pt]) 
+            if (c != '.' && c==pos->color[pt])
                 cfg_map[n] = cfg_map[pt];
             else
                 cfg_map[n] = cfg_map[pt]+1;
@@ -665,7 +665,7 @@ int empty_area(Position *pos, Point pt, int dist)
     int   k;
     Point n;
     FORALL_NEIGHBORS(pos, pt, k, n) {
-        if (pos->color[n]=='x' || pos->color[n]=='X') 
+        if (pos->color[n]=='x' || pos->color[n]=='X')
             return 0;
         else if (pos->color[n]=='.' && dist>1 && !empty_area(pos, n, dist-1))
             return 0;
@@ -710,7 +710,7 @@ int gen_playout_moves_pat3(Position *pos, Slist heuristic_set, float prob,
     if (random_int(1000) <= prob*1000.0)
         FORALL_IN_SLIST(heuristic_set, pt)
             if (pos->color[pt] == '.' && pat3_match(pos, pt))
-               slist_push(moves, pt); 
+               slist_push(moves, pt);
     mark_release(already_suggested);
     return slist_size(moves);
 }
@@ -724,12 +724,12 @@ int gen_playout_moves_random(Position *pos, Point moves[BOARDSIZE], Point i0)
     for(Point i=i0 ; i<BOARD_IMAX ; i++) {
         if (pos->color[i] != '.') continue;    // ignore NOT EMPTY Points
         if (is_eye(pos,i) == 'X') continue;    // ignore true eyes for player
-        slist_push(moves, i); 
+        slist_push(moves, i);
     }
     for(Point i=BOARD_IMIN-1 ; i<i0 ; i++) {
         if (pos->color[i] != '.') continue;    // ignore NOT EMPTY Points
         if (is_eye(pos,i) == 'X') continue;    // ignore true eyes for player
-        slist_push(moves, i); 
+        slist_push(moves, i);
     }
     return slist_size(moves);
 }
@@ -795,9 +795,9 @@ double mcplayout(Position *pos, int amaf_map[], int owner_map[], int disp)
         // 3x3 patterns heuristic suggestions
         if (gen_playout_moves_pat3(pos, last_moves_neighbors,
                                            PROB_HEURISTIC_PAT3, moves))
-            if((move=choose_from(pos, moves, "pat3", disp)) != PASS_MOVE) 
+            if((move=choose_from(pos, moves, "pat3", disp)) != PASS_MOVE)
                 goto found;
-            
+
         gen_playout_moves_random(pos, moves, BOARD_IMIN-1+random_int(N*W));
         move=choose_from(pos, moves, "random", disp);
 found:
@@ -840,7 +840,7 @@ void expand(TreeNode *tree)
     // Use light random playout generator to get all the empty points (not eye)
     gen_playout_moves_random(&tree->pos, moves, BOARD_IMIN-1);
 
-    tree->children = calloc(slist_size(moves)+1, sizeof(TreeNode*));
+    tree->children = calloc(slist_size(moves)+2, sizeof(TreeNode*));
     FORALL_IN_SLIST(moves, pt) {
         pos2 = tree->pos;
         assert(tree->pos.color[pt] == '.');
@@ -969,7 +969,7 @@ TreeNode* best_move(TreeNode *tree, TreeNode **except)
     for (TreeNode **child = tree->children ; *child != NULL ; child++) {
         if ((*child)->v > vmax) {
             int update = 1;
-            if (except != NULL) 
+            if (except != NULL)
                 for (TreeNode **n=except ; *n!=NULL ; n++)
                     if (*child == *n) update=0;
             if (update) {
@@ -1010,11 +1010,11 @@ int tree_descend(TreeNode *tree, int amaf_map[], int disp, TreeNode **nodes)
     Point move;
     //tree->v += 1;
     nodes[last] = tree;
-   
+
     while (nodes[last]->children != NULL && passes <2) {
         if (disp) print_pos(&nodes[last]->pos, stderr, NULL);
         // Pick the most urgent child
-        TreeNode *node = most_urgent(nodes[last]->children, 
+        TreeNode *node = most_urgent(nodes[last]->children,
                                             nodes[last]->nchildren, disp);
         nodes[++last] = node;
         move = node->pos.last;
@@ -1040,12 +1040,12 @@ void tree_update(TreeNode **nodes,int last,int amaf_map[],double score,int disp)
         TreeNode *n= nodes[k];
         if(disp) {
             char str[8]; str_coord(n->pos.last,str);
-            fprintf(stderr, "updating %s %d\n", str, score<0.0); 
+            fprintf(stderr, "updating %s %d\n", str, score<0.0);
         }
         n->v += 1;         // TODO put it in tree_descend when parallelize
         n->w += score<0.0; // score is for to-play, node stats for just-played
-        
-        // Update the node children AMAF stats with moves we made 
+
+        // Update the node children AMAF stats with moves we made
         // with their color
         int amaf_map_value = (n->pos.n %2 == 0 ? 1 : -1);
         if (n->children != NULL) {
@@ -1070,7 +1070,7 @@ Point tree_search(TreeNode *tree, int n, int owner_map[], int disp)
 // Perform MCTS search from a given position for a given #iterations
 {
     double s;
-    int *amaf_map=calloc(BOARDSIZE, sizeof(int)), i, last; 
+    int *amaf_map=calloc(BOARDSIZE, sizeof(int)), i, last;
     TreeNode *best, *nodes[500];
 
     // Initialize the root node if necessary
@@ -1079,7 +1079,7 @@ Point tree_search(TreeNode *tree, int n, int owner_map[], int disp)
 
     for (i=0 ; i<n ; i++) {
         memset(amaf_map, 0, BOARDSIZE*sizeof(int));
-        if (i>0 && i % REPORT_PERIOD == 0) print_tree_summary(tree, i, stderr); 
+        if (i>0 && i % REPORT_PERIOD == 0) print_tree_summary(tree, i, stderr);
         last = tree_descend(tree, amaf_map, disp, nodes);
         Position pos = nodes[last]->pos;
         s = mcplayout(&pos, amaf_map, owner_map, disp);
@@ -1096,7 +1096,7 @@ Point tree_search(TreeNode *tree, int n, int owner_map[], int disp)
     free(amaf_map);
     if (best->pos.last == PASS_MOVE && best->pos.last2 == PASS_MOVE)
         return PASS_MOVE;
-    else if (((double) best->w / (double) best->v) < RESIGN_THRES) 
+    else if (((double) best->w / (double) best->v) < RESIGN_THRES)
         return RESIGN_MOVE;
     else
         return best->pos.last;
@@ -1131,9 +1131,9 @@ void dump_subtree(TreeNode *node, double thres, char *indent, FILE *f
 {
     char str[8], str_winrate[8], str_rave_winrate[8];
     str_coord(node->pos.last, str);
-    if (node->v) sprintf(str_winrate, "%.3f", winrate(node)); 
+    if (node->v) sprintf(str_winrate, "%.3f", winrate(node));
     else         sprintf(str_winrate, "nan");
-    if (node->av) sprintf(str_rave_winrate, "%.3f", (double)node->aw/node->av); 
+    if (node->av) sprintf(str_rave_winrate, "%.3f", (double)node->aw/node->av);
     else          sprintf(str_rave_winrate, "nan");
     fprintf(f,"%s+- %s %5s "
               "(%6d/%-6d, prior %3d/%-3d, rave %6d/%-6d=%5s, urgency %.3f)\n"
@@ -1154,7 +1154,7 @@ void print_tree_summary(TreeNode *tree, int sims, FILE *f)
     int k;
     TreeNode *best_node[5]={0,0,0,0,0}, *node;
 
-    for (k=0 ; k<5 ; k++) { 
+    for (k=0 ; k<5 ; k++) {
         best_node[k] = best_move(tree, best_node);
         if (best_node[k] != NULL) {
             str_coord(best_node[k]->pos.last,str);
@@ -1174,7 +1174,7 @@ void print_tree_summary(TreeNode *tree, int sims, FILE *f)
         strcat(best_seq, str);
     }
     fprintf(f,"[%4d] winrate %.3f | seq %s| can %s\n",sims
-                                    ,winrate(best_node[0]), best_seq, can);   
+                                    ,winrate(best_node[0]), best_seq, can);
 }
 
 Point parse_coord(char *s)
@@ -1187,7 +1187,7 @@ Point parse_coord(char *s)
             break;
         }
         str[i] = toupper(s[i]);
-    } 
+    }
     if(strcmp(str, "PASS") == 0) return PASS_MOVE;
     sscanf(s, "%c%d", &c, &y);
     c = toupper(c);
@@ -1222,13 +1222,13 @@ void print_pos(Position *pos, FILE *f, int *owner_map)
 
     make_pretty(pos, pretty_board, &capB, &capW);
     fprintf(f,"Move: %-3d   Black: %d caps   White: %d caps   Komi: %.1f",
-            pos->n, capB, capW, pos->komi); 
+            pos->n, capB, capW, pos->komi);
     if (pos->ko)
-        fprintf(f,"   ko: %s", str_coord(pos->ko,strko)); 
+        fprintf(f,"   ko: %s", str_coord(pos->ko,strko));
     fprintf(f,"\n");
 
     for (int row=1, k=N+1, k1=N+1 ; row<=N ; row++) {
-        if (pos->last == k+1) fprintf(f, " %-2d(", N-row+1); 
+        if (pos->last == k+1) fprintf(f, " %-2d(", N-row+1);
         else                  fprintf(f, " %-2d ", N-row+1);
         k++;k1++;
         for (int col=1 ; col<=N ; col++,k++) {
@@ -1267,8 +1267,8 @@ double mcbenchmark(int n, Position *pos, int amaf_map[], int owner_map[])
             fprintf(stderr, " ");
         }
         fprintf(stderr, ".");
-        empty_position(pos); memset(amaf_map, 0, BOARDSIZE*sizeof(int)); 
-        sumscore += mcplayout(pos, amaf_map, owner_map, 0); 
+        empty_position(pos); memset(amaf_map, 0, BOARDSIZE*sizeof(int));
+        sumscore += mcplayout(pos, amaf_map, owner_map, 0);
     }
     fprintf(stderr, "\n");
     return sumscore/n;
@@ -1289,7 +1289,7 @@ void gtp_io(void)
     int      *owner_map=calloc(BOARDSIZE, sizeof(int));
     TreeNode *tree;
     Position *pos, pos2;
-    
+
     pos = &pos2;
     empty_position(pos);
     tree = new_tree_node(pos);
@@ -1338,7 +1338,7 @@ void gtp_io(void)
                 pass_move(pos);
             else if (pt != RESIGN_MOVE)
                 play_move(pos, pt);
-            ret = str_coord(pt, buf);  
+            ret = str_coord(pt, buf);
         }
         else if (strcmp(command, "cputime") == 0) {
             float time_sec = (float) clock() / (float) CLOCKS_PER_SEC;
@@ -1415,7 +1415,7 @@ finish_command:
     }
 }
 
-int michi_console(int argc, char *argv[]) 
+int michi_console(int argc, char *argv[])
 {
     char *command;
     // Init global data
@@ -1426,7 +1426,7 @@ int michi_console(int argc, char *argv[])
     already_suggested = calloc(1, sizeof(Mark));
     mark1 = calloc(1, sizeof(Mark)); mark2 = calloc(1, sizeof(Mark));
     Position *pos = malloc(sizeof(Position));
-    int      *amaf_map=calloc(BOARDSIZE, sizeof(int)); 
+    int      *amaf_map=calloc(BOARDSIZE, sizeof(int));
     int      *owner_map=calloc(BOARDSIZE, sizeof(int));
     empty_position(pos);
     TreeNode *tree = new_tree_node(pos);
@@ -1450,15 +1450,15 @@ int michi_console(int argc, char *argv[])
     else if (strcmp(command,"gtp") == 0)
         gtp_io();
     else if (strcmp(command,"mcdebug") == 0)
-        printf("%lf\n", mcplayout(pos, amaf_map, owner_map, 1)); 
+        printf("%lf\n", mcplayout(pos, amaf_map, owner_map, 1));
     else if (strcmp(command,"mcbenchmark") == 0)
-        printf("%lf\n", mcbenchmark(2000, pos, amaf_map, owner_map)); 
+        printf("%lf\n", mcbenchmark(2000, pos, amaf_map, owner_map));
     else if (strcmp(command,"tsdebug") == 0) {
         Point move=tree_search(tree, 100, amaf_map, 0);
         fprintf(stderr, "move = %s\n", str_coord(move,buf));
         if (move != PASS_MOVE && move != RESIGN_MOVE)
             play_move(&tree->pos,move);
-        print_pos(&tree->pos, stderr, NULL); 
+        print_pos(&tree->pos, stderr, NULL);
     }
     else
         usage();

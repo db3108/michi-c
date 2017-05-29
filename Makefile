@@ -15,13 +15,13 @@ CFLAGS= -DNDEBUG -O3 -msse4.1 -fshort-enums -Wall -Wno-char-subscripts
 OBJS=patterns.o debug.o main.o
 BIN=michi
 
-all: $(BIN) 
+all: $(BIN)
 
 michi: $(OBJS) michi.o michi.h
 	gcc $(CFLAGS) -std=gnu99 -o michi michi.o $(OBJS) -lm
 
 %.o: %.c michi.h
-	gcc $(CFLAGS) -c -std=gnu99 $< 
+	gcc $(CFLAGS) -c -std=gnu99 $<
 
 test:
 	tests/run
@@ -30,7 +30,7 @@ valgrind: michi
 	valgrind --track-origins=yes ./michi tsdebug
 
 callgrind: michi
-	valgrind --tool=callgrind ./michi mcbenchmark 
+	valgrind --tool=callgrind ./michi mcbenchmark
 
 tags: $(BIN)
 	ctags *.c *.h

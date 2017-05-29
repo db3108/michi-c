@@ -6,33 +6,33 @@
 
 // There are two types of patterns used in michi :
 //
-// - 3x3 patterns : given the color of the 8 neighbors of the central point 
-//   (4 neighbors and 4 diagonal neighbors) the pat3_match() function returns 
-//   the answer (yes/no) to the question : 
+// - 3x3 patterns : given the color of the 8 neighbors of the central point
+//   (4 neighbors and 4 diagonal neighbors) the pat3_match() function returns
+//   the answer (yes/no) to the question :
 //   Is there a 3x3 pattern matching at this point ?
 //   The recognized patterns are defined by the table pat3_src[] below
 //
-// - Large patterns : given the color of the points in a certain neighborhood 
+// - Large patterns : given the color of the points in a certain neighborhood
 //   of the central point, the large_pattern_probability() function returns the
-//   probability of play at this position. 
-//   This probability is used to bias the search in the MCTS tree. 
+//   probability of play at this position.
+//   This probability is used to bias the search in the MCTS tree.
 //
-//   The point neighborhoods are defined in [4] (see references in michi.c). 
+//   The point neighborhoods are defined in [4] (see references in michi.c).
 //   They are symetric under reflexions and rotations of the board. For each
-//   point, 12 neighborhoods of increasing size are considered, each 
+//   point, 12 neighborhoods of increasing size are considered, each
 //   neighborhood includes all the neighborhoods of lesser size.
 //   In the program, the neighborhoods are defined by the 2 tables :
-//   pat_gridcular_seq and pat_gridcular_size. These tables are compiled into 
+//   pat_gridcular_seq and pat_gridcular_size. These tables are compiled into
 //   the pat_gridcular_seq1d array.
 
 // See below for more details on the pattern code.
 //
 // ================================ 3x3 patterns ==============================
 //
-// 1 bit is sufficient to store the fact that a pattern matches for a given 
-// configuration of the 8 neighbors color. This configuration can be encoded 
+// 1 bit is sufficient to store the fact that a pattern matches for a given
+// configuration of the 8 neighbors color. This configuration can be encoded
 // as a 16 bits integer called env8 (as 2 bits are sufficient to encode one of
-// the 4 possible colors of a point). So the set of 3x3 patterns that are 
+// the 4 possible colors of a point). So the set of 3x3 patterns that are
 // recognized is represented by an array of 65536 bits (or 8192 bytes).
 //
 // The used patterns are symetrical wrt the color so we only need a single array
@@ -43,19 +43,19 @@
 // are stored as arrays in the struct Position and are incrementally updated by
 // the routines that modify the board put_stone() and remove_stone()
 //
-// Note: as the patterns are symetrical wrt to the color, we do not care to 
-//       reverse the color in env4 and env4d after each move. The env4[] and 
-//       env4d[] are defined in terms of BLACK and WHITE rather than 'X' or 'x' 
+// Note: as the patterns are symetrical wrt to the color, we do not care to
+//       reverse the color in env4 and env4d after each move. The env4[] and
+//       env4d[] are defined in terms of BLACK and WHITE rather than 'X' or 'x'
 //
 Byte bit[8]={1,2,4,8,16,32,64,128};
 Byte pat3set[8192];     // Set of the pat3 patterns (defined in pat3src below)
 int  npat3;             // Number of patterns in pat3src
 
-// A set of 3x3 patterns is defined by an array of ASCII strings (of length 10) 
+// A set of 3x3 patterns is defined by an array of ASCII strings (of length 10)
 // with the following encoding
 // char pat_src[][10]= {
-//       "XOX"                   // X : one of BLACK or WHITE    
-//       "..."                   // O : the other color 
+//       "XOX"                   // X : one of BLACK or WHITE
+//       "..."                   // O : the other color
 //       "???",                  // . : EMPTY
 //       "XO."                   // x : not X i.e O or EMPTY or OUT
 //       ".X."                   // o : not O i.e X or EMPTY or OUT
@@ -65,52 +65,52 @@ int  npat3;             // Number of patterns in pat3src
 //       "###"                   // string that mark the end of input
 // }
 
-char pat3src[][10] = { 
+char pat3src[][10] = {
     "XOX"   // 1- hane pattern - enclosing hane
     "..."
     "???",
     "XO."   // 2- hane pattern - non-cutting hane
-    "..." 
+    "..."
     "?.?",
     "XO?"   // 3- hane pattern - magari
-    "X.." 
+    "X.."
     "x.?",
     //"XOO",  // hane pattern - thin hane
     //"...",
     //"?.?", "X",  - only for the X player
-    ".O."   // 4- generic pattern - katatsuke or diagonal attachment; 
+    ".O."   // 4- generic pattern - katatsuke or diagonal attachment;
             //similar to magari
-    "X.." 
+    "X.."
     "...",
     "XO?"   // 5- cut1 pattern (kiri] - unprotected cut
-    "O.o" 
+    "O.o"
     "?o?",
     "XO?"   // 6- cut1 pattern (kiri] - peeped cut
-    "O.X" 
+    "O.X"
     "???",
     "?X?"   // 7- cut2 pattern (de]
-    "O.O" 
+    "O.O"
     "ooo",
     "OX?"   // 8- cut keima
-    "o.O" 
+    "o.O"
     "???",
     "X.?"   // 9- side pattern - chase
-    "O.?" 
+    "O.?"
     "##?",
     "OX?"   // 10- side pattern - block side cut
-    "X.O" 
+    "X.O"
     "###",
     "?X?"   // 11- side pattern - block side connection
-    "x.O" 
+    "x.O"
     "###",
     "?XO"   // 12- side pattern - sagari
-    "x.x" 
+    "x.x"
     "###",
     "?OX"   // 13- side pattern - cut
-    "X.O" 
+    "X.O"
     "###",
-    "###" 
-    "###" 
+    "###"
+    "###"
     "###"  // Mark the end of the pattern list
 };
 
@@ -136,7 +136,7 @@ int code(char color, int p)
 int compute_code(char *src)
 // Compute a 16 bits code that completely describes the 3x3 environnement of a
 // given point.
-// Note: the low 8 bits describe the state of the 4 neighbours, 
+// Note: the low 8 bits describe the state of the 4 neighbours,
 //       the high 8 bits describe the state of the 4 diagonal neighbors
 {
                                         // src   0 1 2     bits in env8  7 0 4
@@ -187,11 +187,11 @@ void pat_wildexp(char *src, int i)
         src1[i]='.'; pat_wildexp(src1, i+1);
         src1[i]='#'; pat_wildexp(src1, i+1);
     }
-    else 
+    else
         pat_wildexp(src, i+1);
 }
 
-char *swapcolor(char *src) 
+char *swapcolor(char *src)
 {
     for (int i=0 ; i<9 ; i++) {
         switch (src[i]) {
@@ -199,7 +199,7 @@ char *swapcolor(char *src)
             case 'O': src[i] = 'X'; break;
             case 'x': src[i] = 'o'; break;
             case 'o': src[i] = 'x'; break;
-        } 
+        }
     }
     return src;
 }
@@ -223,7 +223,7 @@ char* vertflip(char *src)
 char* rot90(char *src)
 {
     char t=src[0]; src[0]=src[2]; src[2]=src[8]; src[8]=src[6]; src[6]=t;
-    t=src[1]; src[1]=src[5]; src[5]=src[7]; src[7]=src[3]; src[3]=t; 
+    t=src[1]; src[1]=src[5]; src[5]=src[7]; src[7]=src[3]; src[3]=t;
     return src;
 }
 
@@ -278,24 +278,24 @@ void make_pat3set(void)
 // The sizes of the neighborhoods are large (up to 141 points). Therefore the
 // exact configuration of the colors in the neighborhoods cannot be used for
 // pattern matching. Instead, a Zobrist signature (see [4] et [7]) of 64 bits
-// is computed from all points in the neighborhoods. Then this signature is 
+// is computed from all points in the neighborhoods. Then this signature is
 // searched in a big hash table that contains the signatures of the patterns
-// read in the file patterns.spat. If successful, the search returns the 
-// probability of the patterns. 
+// read in the file patterns.spat. If successful, the search returns the
+// probability of the patterns.
 //
 // A large board with 7 layers of OUT of board points is used in order to avoid
 // tests during the computation of the signature for a given point. This large
 // board contains only the information on the color of points. It is build by
 // copy_to_large_board() which is called only once in the routine expand() while
-// pat_match() is called many times. 
-// 
-// With the large board it is an easy matter to compute the signature by 
+// pat_match() is called many times.
+//
+// With the large board it is an easy matter to compute the signature by
 // looping on all the points of the neighborhood thanks to the gridcular_seq1d
 // array which stores the displacements with respect to the central point.
 //
-// The hash table "patterns" is computed by init_patterns(). 
+// The hash table "patterns" is computed by init_patterns().
 // It uses internal chaining with double hashing [9].
-// The performance of this hash table is reported in the log file michi.log 
+// The performance of this hash table is reported in the log file michi.log
 // after the compilation of patterns.spat file and at the end of the execution.
 //
 // ------------------------ Data Structures -----------------------------------
@@ -405,7 +405,7 @@ int insert_pat(LargePat p)
 }
 
 LargePat build_pat(ZobristHash key, int id, float prob)
-{    
+{
     LargePat pat = {key, id, prob};
     return pat;
 }
@@ -415,9 +415,9 @@ void init_stone_color(void)
 {
     memset(color,0,1024);
     color['.'] = 0;                      // 0: EMPTY
-    color['#'] = color[' '] = 1;         // 1: OUT  
+    color['#'] = color[' '] = 1;         // 1: OUT
     color['O'] = color['x'] = 2;         // 2: Other or 'x'
-    color['X'] = 3;                      // 3: ours 
+    color['X'] = 3;                      // 3: ours
 }
 
 void init_zobrist_hashdata(void)
@@ -430,7 +430,7 @@ void init_zobrist_hashdata(void)
         }
     }
 }
-  
+
 ZobristHash zobrist_hash(char *pat) {
     int l = strlen(pat);
     ZobristHash k=0;
@@ -440,9 +440,9 @@ ZobristHash zobrist_hash(char *pat) {
     return k;
 }
 
-ZobristHash 
+ZobristHash
 update_zobrist_hash_at_point(Point pt, int size, ZobristHash k)
-// Update the Zobrist signature for the points of pattern of size 'size' 
+// Update the Zobrist signature for the points of pattern of size 'size'
 {
     int imin=pat_gridcular_size[size-1], imax=pat_gridcular_size[size];
     for (int i=imin ; i<imax ; i++) {
@@ -691,14 +691,14 @@ void init_large_patterns(void)
     }
     log_fmt_s('I', "=========== Hashtable initialization synthesis ==========",
                                                                          NULL);
-    // reset the statistics after logging them 
+    // reset the statistics after logging them
     log_hashtable_synthesis();
     nsearchs = nsuccess = 0;
     sum_len_success=sum_len_failure=0.0;
 }
 
 double large_pattern_probability(Point pt)
-// return probability of large-scale pattern at coordinate pt. 
+// return probability of large-scale pattern at coordinate pt.
 // Multiple progressively wider patterns may match a single coordinate,
 // we consider the largest one.
 {
@@ -735,9 +735,9 @@ char* make_list_pat_matching(Point pt, int verbose)
     buf[0] = 0;
     for (int s=1 ; s<13 ; s++) {
         k = update_zobrist_hash_at_point(large_coord[pt], s, k);
-        i = find_pat(k); 
+        i = find_pat(k);
         if (patterns[i].key == k) {
-            if (verbose) 
+            if (verbose)
                 sprintf(id,"%d(%.3f) ", patterns[i].id, patterns[i].prob);
             else
                 sprintf(id,"%d ", patterns[i].id);
@@ -747,10 +747,10 @@ char* make_list_pat_matching(Point pt, int verbose)
     return buf;
 }
 
-void log_hashtable_synthesis() 
+void log_hashtable_synthesis()
 {
     double nkeys=0;
-    for (int i=0 ; i<LENGTH ; i++) 
+    for (int i=0 ; i<LENGTH ; i++)
         if(patterns[i].key != 0) nkeys +=1.0;
     sprintf(buf,"hashtable entries: %.0lf (fill ratio: %.1lf %%)", nkeys,
                                              100.0 * nkeys / LENGTH);

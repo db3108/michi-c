@@ -1,10 +1,10 @@
 Michi-c --- Michi recoded in C
 ==============================
 
-This is a recoding in C (for speed) of the michi.py code by Petr Baudis avalaible at 
+This is a recoding in C (for speed) of the michi.py code by Petr Baudis avalaible at
 https://github.com/pasky/michi.
 
-Michi stands for "Minimalistic Pachi". This is a Minimalistic Go MCTS Engine. The aims of the project are best explained by the author: 
+Michi stands for "Minimalistic Pachi". This is a Minimalistic Go MCTS Engine. The aims of the project are best explained by the author:
 
 > Michi aims to be a minimalistic but full-fledged Computer Go program based
 > on state-of-art methods (Monte Carlo Tree Search) and written in Python.
@@ -25,7 +25,7 @@ Michi-c is distributed under the MIT licence.  Now go forth, hack and peruse!
 However, as stated above, the main goal of michi and michi-c is to provide a simple and clear code. Therefore, one objective is not to make michi-c grow bigger.
 I would like to just correct bugs and/or modify the code to make it clearer or simpler.
 
-Therefore, a companion project has been setup at 
+Therefore, a companion project has been setup at
 
 https://github.com/db3108/michi-c2
 
@@ -41,7 +41,7 @@ $ make
 
 This will build the michi executable.
 
-If you have gogui (http://gogui.sourceforge.net/) installed on your system, define the GOGUI variable (export GOGUI=/path/to/gogui/bin) with the location where the gogui executables can be found. Then 
+If you have gogui (http://gogui.sourceforge.net/) installed on your system, define the GOGUI variable (export GOGUI=/path/to/gogui/bin) with the location where the gogui executables can be found. Then
 
 $ make test
 
@@ -70,14 +70,14 @@ will perform a few (quick) regression tests. The result should be :
 
 If the test is not successful you can take a look at the INSTALL file in the
 michi-c2 project. There are some advices in case of troubleshooting.
- 
+
 Usage
 -----
 
 $ ./michi gtp
 
 will allow to play a game using the gtp protocol. Type help to get the list of
-available commands. 
+available commands.
 
 However it's easier to use michi through the gogui graphical interface.
 
@@ -109,15 +109,15 @@ All the parameters are hard coded in the michi.h file, which must be modified if
 Understanding and Hacking
 -------------------------
 
-The C code can be read in parallel with the python code. 
+The C code can be read in parallel with the python code.
 I have been careful to keep the notations used by Petr (almost) everywhere.
 Of course the algorithms are the same (at least functionally) as well as the
 parameters. Most of the comments have been retained verbatim.
 
 Examples where the python and the C codes are different are:
-- in the functions gen_playout_moves_xxx(). I have not been able to emulate in 
+- in the functions gen_playout_moves_xxx(). I have not been able to emulate in
   C the generators that are available in python (yield instruction). So these
-  functions in the C code must compute the whole list of suggestions before 
+  functions in the C code must compute the whole list of suggestions before
   returning.
 - computation of blocks does not use regexp as the direct coding is simple.
 - need to recode a functionality equivalent to python dictionary (in patterns.c)
@@ -134,9 +134,9 @@ and pattern code (3x3 and large patterns) which is found in patterns.c
 
 Go programs heavily use lists or sets of (small) integers. There are many possible implementations that differ by the performance of the various operations we need to perform on these data structures:
 - insert one element,
-- remove one element, 
-- enumerate all the elements, 
-- test "element belongs to ?", 
+- remove one element,
+- enumerate all the elements,
+- test "element belongs to ?",
 - make the set empty ...
 
 The two simple implementations Slist and Mark of sets that I needed to make the michi-c program are found in michi.h (inlined for performance).
@@ -149,20 +149,20 @@ Short bibliography
 1.  Martin Mueller, Computer Go, Artificial Intelligence, Vol.134, No 1-2,
     pp 145-179, 2002
 2.  Remi Coulom.  Efficient Selectivity and Backup Operators in Monte-Carlo Tree
-    Search.  Paolo Ciancarini and H. Jaap van den Herik.  5th International 
-    Conference on Computer and Games, May 2006, Turin, Italy.  2006. 
+    Search.  Paolo Ciancarini and H. Jaap van den Herik.  5th International
+    Conference on Computer and Games, May 2006, Turin, Italy.  2006.
     <inria-00116992>
 3.  Sylvain Gelly, Yizao Wang, Remi Munos, Olivier Teytaud.  Modification of UCT
     with Patterns in Monte-Carlo Go. [Research Report] RR-6062, 2006.
     <inria-00117266v3>
 4.  David Stern, Ralf Herbrich, Thore Graepel, Bayesian Pattern Ranking for Move
-    Prediction in the Game of Go, In Proceedings of the 23rd international 
-    conference on Machine learning, pages 873–880, Pittsburgh, Pennsylvania, 
+    Prediction in the Game of Go, In Proceedings of the 23rd international
+    conference on Machine learning, pages 873–880, Pittsburgh, Pennsylvania,
     USA, 2006
-5.  Rémi Coulom. Computing Elo Ratings of Move Patterns in the Game of Go. 
+5.  Rémi Coulom. Computing Elo Ratings of Move Patterns in the Game of Go.
     In ICGA Journal (2007), pp 198-208.
 6.  Sylvain Gelly, David Silver. Achieving Master Level Play in 9×9 Computer Go.
-    Proceedings of the Twenty-Third AAAI Conference on Artificial Intelligence 
+    Proceedings of the Twenty-Third AAAI Conference on Artificial Intelligence
     (2008)
 7.  Albert L Zobrist. A New Hashing Method with Application for Game Playing.
 8.  Petr Baudis. MCTS with Information Sharing, PhD Thesis, 2011
@@ -170,7 +170,7 @@ Short bibliography
 
 and many other PhD thesis accessible on the WEB
 
-Note: [ref 1] can be consulted for the definition of Computer Go terms : 
+Note: [ref 1] can be consulted for the definition of Computer Go terms :
       points, blocks, eyes, false eyes, liberties, etc.
       and historical bibliography
 
